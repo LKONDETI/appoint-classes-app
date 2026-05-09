@@ -1,0 +1,51 @@
+name: appt_app
+description: "Appointment booking app for classes."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.3
+
+  # HTTP
+  dio: ^5.8.0+1
+
+  # Secure storage
+  flutter_secure_storage: ^9.2.4
+
+  # JSON / immutable models
+  json_annotation: ^4.9.0
+  freezed_annotation: ^3.0.0
+
+  # Image picking & compression
+  image_picker: ^1.1.2
+  flutter_image_compress: ^2.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Code generation
+  build_runner: ^2.4.15
+  riverpod_generator: ^2.6.5
+  freezed: ^3.0.0
+  json_serializable: ^6.9.5
+
+  # Testing
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
