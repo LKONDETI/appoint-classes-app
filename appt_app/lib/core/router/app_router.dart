@@ -26,7 +26,7 @@ final _authRouterNotifierProvider =
 );
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final notifier = ref.watch(_authRouterNotifierProvider);
+  final notifier = ref.read(_authRouterNotifierProvider);
 
   return GoRouter(
     initialLocation: '/splash',
