@@ -1,0 +1,12 @@
+services:
+  appt_api:
+    build:
+      context: ./appt_api
+      dockerfile: Dockerfile
+    ports:
+      - "5276:8080"
+    env_file:
+      - ./appt_api/.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: unless-stopped
