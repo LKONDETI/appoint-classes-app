@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
     {
         var result = await _authService.RegisterAsync(request, ct);
-        return CreatedAtAction(nameof(Register), result);
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     [HttpPost("login")]

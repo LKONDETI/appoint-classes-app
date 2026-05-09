@@ -52,7 +52,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
   bool get isAuthenticated => state is AuthAuthenticated;
 
   Future<void> checkAuthStatus() async {
-    await _repo.logout();
+    final token = await _repo.getStoredToken();
+    if (token != null && token.isNotEmpty) {
+      // Token exists — we treat the user as authenticated.
+      // A full implementation would decode the JWT and validate expiry here,
+      // but the AuthInterceptor will handle a truly expired token (401 → logout).
+      // We need a stored user to reconstruct the state; fall back to unauthenticated
+      // so the user re-logs in. This preserves the token for the interceptor layer.
+      // ignore: avoid_print
+      print('[AUTH] checkAuthStatus: token found, marking as unauthenticated '
+          '(full session restore requires persisted user info)');
+    }
+    // Always start unauthenticated; login/register will set AuthAuthenticated.
     state = const AuthUnauthenticated();
   }
 

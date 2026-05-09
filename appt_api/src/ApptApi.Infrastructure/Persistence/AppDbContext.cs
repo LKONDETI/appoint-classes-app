@@ -37,7 +37,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.DisplayName).HasColumnName("display_name").HasMaxLength(100).IsRequired();
-            entity.Property(e => e.AvatarUrl).HasColumnName("avatar_url").HasMaxLength(512);
+            entity.Property(e => e.AvatarUrl).HasColumnName("avatar_url");
             entity.Property(e => e.PhoneNumber).HasColumnName("phone_number").HasMaxLength(30);
             entity.Property(e => e.Bio).HasColumnName("bio").HasMaxLength(500);
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");

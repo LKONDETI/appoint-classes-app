@@ -1,160 +1,182 @@
-# Claude Agents & Skills Template
+# ApptClass
 
-A reusable `.claude/` template for any project. Copy the `.claude/` folder into your new project root and replace all `{{PLACEHOLDER}}` values.
-
----
-
-## Folder Structure
-
-```
-.claude/
-  agents/
-    task-planner/AGENT.md       — breaks features into ordered tasks
-    architect/AGENT.md          — designs folder structure & patterns
-    coding-expert/AGENT.md      — writes the implementation code
-    code-reviewer/AGENT.md      — reviews for quality & SOLID issues
-    security-reviewer/AGENT.md  — reviews for OWASP Top 10 vulnerabilities
-    testing-expert/AGENT.md     — writes unit & integration tests
-    task-summarizer/AGENT.md    — summarizes completed work
-  skills/
-    new-feature/SKILL.md        — full pipeline: plan→arch→code→review→test→summary
-    run-tests/SKILL.md          — runs the test suite
-    deploy/SKILL.md             — builds and deploys the app
-```
+A full-stack appointment / class scheduling mobile app built with **Flutter** (frontend) and **.NET 9** (REST API), backed by **PostgreSQL** (Supabase).
 
 ---
 
-## Placeholder Reference
+## Tech Stack
 
-Replace every `{{PLACEHOLDER}}` in the agent/skill files with values for your project.
-
-| Placeholder | Description | Examples |
-|---|---|---|
-| `{{TECH_STACK}}` | Language + framework | `.NET 9`, `Node.js + Express`, `Python + FastAPI`, `Go + Gin` |
-| `{{PROJECT_TYPE}}` | What the project is | `REST API`, `web app`, `CLI tool`, `microservice` |
-| `{{LANG}}` | Code language for snippets | `csharp`, `typescript`, `python`, `go` |
-| `{{DEFAULT_PATTERN}}` | Default architecture pattern | `Clean Architecture + Repository Pattern`, `MVC`, `Hexagonal Architecture` |
-| `{{ARCHITECTURE_LAYERS}}` | Layers in the architecture | See examples below |
-| `{{FOLDER_STRUCTURE_EXAMPLE}}` | Example folder tree | See examples below |
-| `{{BUILD_COMMAND}}` | How to build the project | `dotnet build`, `npm run build`, `go build ./...`, `mvn package` |
-| `{{RELEASE_FLAGS}}` | Release build flags | `-c Release`, `--mode=production`, `-ldflags="-s -w"` |
-| `{{TEST_COMMAND}}` | How to run tests | `dotnet test`, `npm test`, `pytest`, `go test ./...` |
-| `{{TEST_FLAGS}}` | Extra test flags | `--configuration Release --logger "console;verbosity=normal"`, `--coverage` |
-| `{{TEST_FRAMEWORK}}` | Test framework name | `xUnit ([Fact]/[Theory])`, `Jest (describe/it)`, `pytest`, `testing.T` |
-| `{{INTEGRATION_TEST_APPROACH}}` | How integration tests work | See examples below |
-| `{{PUBLISH_COMMAND}}` | How to package artifacts | `dotnet publish -c Release -o ./publish`, `npm run build && zip -r dist.zip dist/` |
-| `{{DEPLOY_CLI}}` | Cloud CLI tool | `az`, `aws`, `gcloud`, `fly`, `heroku` |
-| `{{DEPLOY_COMMAND}}` | Deploy command | `az webapp deploy ...`, `aws s3 sync ...`, `fly deploy` |
-| `{{HEALTH_CHECK_COMMAND}}` | Verify deployment | `az webapp show ...`, `curl https://myapp.com/health`, `fly status` |
-| `{{CLOUD_PROVIDER}}` | Cloud target | `Azure`, `AWS`, `GCP`, `Fly.io`, `Railway` |
-| `{{CODING_STANDARDS}}` | Language-specific rules | See examples below |
-
----
-
-## Filled-in Examples by Stack
-
-### .NET 9 Web API (this project's original values)
-
-| Placeholder | Value |
+| Layer | Technology |
 |---|---|
-| `{{TECH_STACK}}` | `.NET 9` |
-| `{{PROJECT_TYPE}}` | `banking API` |
-| `{{LANG}}` | `csharp` |
-| `{{DEFAULT_PATTERN}}` | `Clean Architecture + Repository Pattern` |
-| `{{BUILD_COMMAND}}` | `dotnet build` |
-| `{{TEST_COMMAND}}` | `dotnet test` |
-| `{{TEST_FLAGS}}` | `--configuration Release --logger "console;verbosity=normal"` |
-| `{{TEST_FRAMEWORK}}` | `xUnit ([Fact], [Theory], [InlineData])` |
-| `{{DEPLOY_CLI}}` | `az` |
-| `{{CLOUD_PROVIDER}}` | `Azure` |
+| Mobile App | Flutter 3.x + Riverpod + GoRouter |
+| REST API | .NET 9 · ASP.NET Core · Clean Architecture |
+| Database | PostgreSQL (Supabase) · EF Core 9 |
+| Auth | JWT Bearer tokens · BCrypt password hashing |
+| Containerisation | Docker · docker-compose |
 
-`{{ARCHITECTURE_LAYERS}}`:
-```
-- Domain (entities, value objects, interfaces)
-- Infrastructure (EF Core, repositories, cloud integrations)
-- Application (services, use cases, DTOs)
-- API (controllers, request/response models, middleware)
-- Tests (unit + integration)
-```
+---
 
-`{{INTEGRATION_TEST_APPROACH}}`:
-```
-- For integration tests: use WebApplicationFactory<Program> + in-memory SQLite or Testcontainers
-```
+## Project Structure
 
-`{{CODING_STANDARDS}}`:
 ```
-- Use record types for DTOs
-- Use ILogger<T> for logging
-- Use async methods with CancellationToken throughout
-- Return proper HTTP status codes
-- Never hardcode secrets — use environment variables or Key Vault
+appt_class/
+├── appt_app/               # Flutter mobile application
+│   └── lib/
+│       ├── core/           # Shared utilities (Dio client, router, providers, constants)
+│       └── features/
+│           ├── auth/       # Login · Register · Splash
+│           ├── home/       # Home dashboard
+│           └── profile/    # View & edit user profile
+│
+├── appt_api/               # .NET 9 REST API
+│   └── src/
+│       ├── ApptApi.API/            # Controllers · Middleware · Validators · Program.cs
+│       ├── ApptApi.Application/    # Services · DTOs · Interfaces
+│       ├── ApptApi.Domain/         # Entities · Domain interfaces
+│       └── ApptApi.Infrastructure/ # EF Core DbContext · Repositories · JWT service
+│
+└── docker-compose.yml      # Runs the API on port 5276
 ```
 
 ---
 
-### Node.js + Express REST API
+## Prerequisites
 
-| Placeholder | Value |
-|---|---|
-| `{{TECH_STACK}}` | `Node.js + Express` |
-| `{{PROJECT_TYPE}}` | `REST API` |
-| `{{LANG}}` | `typescript` |
-| `{{DEFAULT_PATTERN}}` | `Layered Architecture (routes → controllers → services → repositories)` |
-| `{{BUILD_COMMAND}}` | `npm run build` |
-| `{{TEST_COMMAND}}` | `npm test` |
-| `{{TEST_FLAGS}}` | `--coverage` |
-| `{{TEST_FRAMEWORK}}` | `Jest (describe/it/expect)` |
-| `{{DEPLOY_CLI}}` | `aws` |
-| `{{CLOUD_PROVIDER}}` | `AWS` |
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) ≥ 3.19
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for running the API via Docker)
+- A PostgreSQL database (the project is configured for [Supabase](https://supabase.com))
 
 ---
 
-### Python + FastAPI
+## Getting Started
 
-| Placeholder | Value |
-|---|---|
-| `{{TECH_STACK}}` | `Python 3.12 + FastAPI` |
-| `{{PROJECT_TYPE}}` | `REST API` |
-| `{{LANG}}` | `python` |
-| `{{DEFAULT_PATTERN}}` | `Layered Architecture (routers → services → repositories)` |
-| `{{BUILD_COMMAND}}` | `pip install -r requirements.txt` |
-| `{{TEST_COMMAND}}` | `pytest` |
-| `{{TEST_FLAGS}}` | `-v --cov=app --cov-report=term-missing` |
-| `{{TEST_FRAMEWORK}}` | `pytest` |
-| `{{DEPLOY_CLI}}` | `gcloud` |
-| `{{CLOUD_PROVIDER}}` | `GCP` |
+### 1. Configure the API
+
+Create `appt_api/.env` (or copy the template) with your credentials:
+
+```env
+ConnectionStrings__DefaultConnection=Host=<host>;Port=5432;Database=postgres;Username=postgres;Password=<password>;SSL Mode=Require;Trust Server Certificate=true
+JwtSettings__SecretKey=<at-least-32-character-secret>
+```
+
+> **Never commit `.env` to source control.** It is already listed in `.gitignore`.
+
+### 2. Run the API
+
+**Option A – Docker (recommended)**
+
+```bash
+docker-compose up --build
+# API available at http://localhost:5276
+```
+
+**Option B – .NET CLI**
+
+```bash
+cd appt_api
+dotnet run --project src/ApptApi.API
+# API available at http://localhost:5276
+```
+
+Swagger UI is served at `http://localhost:5276/swagger`.
+
+### 3. Run the Flutter App
+
+```bash
+cd appt_app
+flutter pub get
+flutter run
+```
+
+The app connects to `http://localhost:5276` by default (see `lib/core/constants/api_constants.dart`).  
+When running on a **physical Android device**, change `baseUrl` to your machine's local IP (e.g. `http://192.168.x.x:5276`).
 
 ---
 
-## How to Use This Template
+## API Endpoints
 
-1. Copy the `.claude/` folder into your new project root
-2. Open each `AGENT.md` and `SKILL.md` file
-3. Replace every `{{PLACEHOLDER}}` with the correct value for your project
-4. Optionally add/remove agents that don't apply (e.g., remove `azure-ops` if not using Azure)
-5. Add a `CLAUDE.md` file at your project root describing project-specific context
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | ❌ | Create a new account |
+| `POST` | `/api/auth/login` | ❌ | Obtain a JWT token |
+| `GET` | `/api/profile` | ✅ Bearer | Get the authenticated user's profile |
+| `PUT` | `/api/profile` | ✅ Bearer | Update display name, bio, phone, avatar |
 
-That's it — Claude Code will automatically discover and use the agents and skills.
+### Example – Register
+
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "displayName": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "SecurePass123"
+}
+```
+
+Response `201 Created`:
+
+```json
+{
+  "token": "<jwt>",
+  "expiresAt": "2026-05-10T18:00:00Z",
+  "user": {
+    "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "email": "jane@example.com",
+    "displayName": "Jane Doe"
+  }
+}
+```
 
 ---
 
-## Agent Trigger Phrases (quick reference)
+## Architecture Overview
 
-| Agent | When to use |
-|---|---|
-| `task-planner` | "plan X", "I want to add X", "what do I need to build X" |
-| `architect` | "design X", "what structure for X", "how should I architect X" |
-| `coding-expert` | "implement X", "write the code for X", "create X" |
-| `code-reviewer` | "review X", "check quality of X", "is my code good?" |
-| `security-reviewer` | "security review X", "check for vulnerabilities in X" |
-| `testing-expert` | "write tests for X", "test X", "add unit tests to X" |
-| `task-summarizer` | "summarize what we did", "recap", "what did we build" |
+### Flutter app (Clean Architecture)
 
-## Skill Trigger Phrases
+```
+Presentation  →  StateNotifier (Riverpod)  →  Repository interface
+                                                       ↓
+Data layer    →  RemoteDataSource (Dio)     →  Repository impl
+```
 
-| Skill | Trigger |
-|---|---|
-| `/new-feature` | Starting a new feature from scratch (runs full pipeline) |
-| `/run-tests` | Run the test suite |
-| `/deploy` | Deploy to the target environment |
+- **GoRouter** with `refreshListenable` re-evaluates redirects whenever auth state changes.
+- **AuthInterceptor** automatically attaches the stored JWT to every request and calls `logout()` on a `401` response.
+- **flutter_secure_storage** persists the JWT between app restarts.
+
+### .NET API (Clean Architecture)
+
+```
+Controllers  →  Services (Application)  →  Repositories (Infrastructure)  →  EF Core  →  PostgreSQL
+```
+
+- **FluentValidation** validates all request bodies; invalid requests return `400 Bad Request` automatically.
+- **ExceptionMiddleware** maps domain exceptions to HTTP status codes:
+  - `ConflictException` → `409`
+  - `UnauthorizedException` → `401`
+  - `NotFoundException` → `404`
+  - Unhandled → `500`
+
+---
+
+## Running Tests
+
+```bash
+# API tests
+cd appt_api
+dotnet test
+
+# Flutter tests
+cd appt_app
+flutter test
+```
+
+---
+
+## Known Limitations / Future Work
+
+- Session restore after app restart currently requires re-login (the token is preserved in secure storage but the user object is not yet persisted; a full restore would decode the JWT and populate the auth state).
+- No appointment / class booking feature yet — auth and profile are the foundation.
+- Push notifications and calendar sync are planned.
