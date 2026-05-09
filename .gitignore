@@ -3,3 +3,8 @@ node_modules/
 # .NET build outputs
 **/bin/
 **/obj/
+
+# Environment files (contain secrets - never commit)
+.env
+.env.local
+**/.env

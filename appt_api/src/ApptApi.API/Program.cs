@@ -14,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ApptApi.API.Middleware;
 
+DotNetEnv.Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Database ────────────────────────────────────────────────────────────────
