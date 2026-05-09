@@ -52,16 +52,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   bool get isAuthenticated => state is AuthAuthenticated;
 
   Future<void> checkAuthStatus() async {
-    final token = await _repo.getStoredToken();
-    // ignore: avoid_print
-    print('[AUTH] checkAuthStatus: token found = ${token != null}');
-    state = token != null ? _tokenFoundState(token) : const AuthUnauthenticated();
-  }
-
-  AuthState _tokenFoundState(String token) {
-    return AuthAuthenticated(
-      AuthUser(id: '', email: '', displayName: '', token: token),
-    );
+    await _repo.logout();
+    state = const AuthUnauthenticated();
   }
 
   Future<void> login(String email, String password) async {
