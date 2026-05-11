@@ -24,6 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ── Options ─────────────────────────────────────────────────────────────────
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Google"));
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()!;
 
 // ── Authentication / JWT ────────────────────────────────────────────────────
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 
 // ── Services ─────────────────────────────────────────────────────────────────
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IGoogleTokenVerifier, GoogleTokenVerifier>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 

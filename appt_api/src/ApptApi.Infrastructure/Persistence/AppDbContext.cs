@@ -18,11 +18,14 @@ public class AppDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Email).HasColumnName("email").HasMaxLength(256).IsRequired();
-            entity.Property(e => e.PasswordHash).HasColumnName("password_hash").HasMaxLength(512).IsRequired();
+            entity.Property(e => e.PasswordHash).HasColumnName("password_hash").HasMaxLength(512).IsRequired(false);
+            entity.Property(e => e.Provider).HasColumnName("provider").HasMaxLength(20).IsRequired().HasDefaultValue("email");
+            entity.Property(e => e.ProviderId).HasColumnName("provider_id").HasMaxLength(256).IsRequired(false);
             entity.Property(e => e.IsActive).HasColumnName("is_active").HasDefaultValue(true);
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.HasIndex(e => e.Email).IsUnique();
+            entity.HasIndex(e => e.ProviderId).IsUnique().HasFilter("provider_id IS NOT NULL");
 
             entity.HasOne(e => e.Profile)
                   .WithOne(p => p.User)

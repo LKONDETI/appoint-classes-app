@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_text_field.dart';
+import '../widgets/google_sign_in_button.dart';
 import '../widgets/primary_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -27,6 +28,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     await ref
         .read(authProvider.notifier)
         .login(_emailCtrl.text.trim(), _passwordCtrl.text);
+
+    if (!mounted) return;
+    final state = ref.read(authProvider);
+    if (state is AuthAuthenticated) {
+      context.go('/home');
+    }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    await ref.read(authProvider.notifier).signInWithGoogle();
 
     if (!mounted) return;
     final state = ref.read(authProvider);
@@ -102,6 +113,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 label: 'Sign In',
                 isLoading: isLoading,
                 onPressed: _handleLogin,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      'or',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 16),
+              GoogleSignInButton(
+                isLoading: isLoading,
+                onPressed: _handleGoogleSignIn,
               ),
               const SizedBox(height: 16),
               Row(

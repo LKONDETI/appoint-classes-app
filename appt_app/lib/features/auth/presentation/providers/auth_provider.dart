@@ -11,6 +11,7 @@ final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   return AuthRepositoryImpl(
     AuthRemoteDataSource(ref.read(dioProvider)),
     ref.read(secureStorageProvider),
+    ref.read(googleSignInProvider),
   );
 });
 
@@ -100,6 +101,27 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    state = const AuthLoading();
+    // ignore: avoid_print
+    print('[AUTH] signInWithGoogle: starting');
+    try {
+      final user = await _repo.signInWithGoogle();
+      // ignore: avoid_print
+      print('[AUTH] signInWithGoogle: SUCCESS → AuthAuthenticated(${user.email})');
+      state = AuthAuthenticated(user);
+    } on Exception catch (e) {
+      // ignore: avoid_print
+      print('[AUTH] signInWithGoogle: FAILED → $e');
+      final msg = e.toString();
+      if (msg.contains('cancelled')) {
+        state = const AuthUnauthenticated();
+        return;
+      }
+      state = AuthError(_extractMessage(e));
+    }
+  }
+
   Future<void> logout() async {
     await _repo.logout();
     state = const AuthUnauthenticated();
@@ -107,7 +129,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   String _extractMessage(Exception e) {
     final msg = e.toString();
-    if (msg.contains('409')) return 'An account with this email already exists.';
+    if (msg.contains('409')) return 'An account with this email already exists. Please sign in with your email and password.';
     if (msg.contains('401')) return 'Email or password is incorrect.';
     if (msg.contains('SocketException') || msg.contains('Connection')) {
       return 'Cannot connect to server. Check your connection.';

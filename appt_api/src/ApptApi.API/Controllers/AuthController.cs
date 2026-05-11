@@ -31,4 +31,15 @@ public class AuthController : ControllerBase
         var result = await _authService.LoginAsync(request, ct);
         return Ok(result);
     }
+
+    [HttpPost("social")]
+    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> SocialAuth([FromBody] SocialAuthRequest request, CancellationToken ct)
+    {
+        var result = await _authService.SocialAuthAsync(request, ct);
+        return Ok(result);
+    }
 }

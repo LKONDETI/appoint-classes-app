@@ -23,4 +23,12 @@ class AuthRemoteDataSource {
     );
     return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<AuthResponseModel> socialAuth(String idToken, String provider) async {
+    final response = await _dio.post(
+      ApiConstants.socialAuth,
+      data: {'idToken': idToken, 'provider': provider},
+    );
+    return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
+  }
 }

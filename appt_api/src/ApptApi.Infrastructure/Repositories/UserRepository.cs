@@ -20,6 +20,9 @@ public class UserRepository : IUserRepository
     public Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default) =>
         _db.Users.AnyAsync(u => u.Email == email.ToLowerInvariant(), ct);
 
+    public Task<User?> GetByProviderIdAsync(string provider, string providerId, CancellationToken ct = default) =>
+        _db.Users.Include(u => u.Profile).FirstOrDefaultAsync(u => u.Provider == provider && u.ProviderId == providerId, ct);
+
     public async Task AddAsync(User user, CancellationToken ct = default) =>
         await _db.Users.AddAsync(user, ct);
 

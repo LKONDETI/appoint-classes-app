@@ -5,7 +5,9 @@ namespace ApptApi.Domain.Entities;
 public class User : BaseEntity
 {
     public string Email { get; private set; } = string.Empty;
-    public string PasswordHash { get; private set; } = string.Empty;
+    public string? PasswordHash { get; private set; }
+    public string Provider { get; private set; } = "email";
+    public string? ProviderId { get; private set; }
     public bool IsActive { get; private set; } = true;
     public UserProfile? Profile { get; private set; }
 
@@ -19,7 +21,22 @@ public class User : BaseEntity
         return new User
         {
             Email = email.ToLowerInvariant(),
-            PasswordHash = passwordHash
+            PasswordHash = passwordHash,
+            Provider = "email"
+        };
+    }
+
+    public static User CreateSocialUser(string email, string provider, string providerId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        ArgumentException.ThrowIfNullOrWhiteSpace(provider);
+        ArgumentException.ThrowIfNullOrWhiteSpace(providerId);
+
+        return new User
+        {
+            Email = email.ToLowerInvariant(),
+            Provider = provider,
+            ProviderId = providerId
         };
     }
 

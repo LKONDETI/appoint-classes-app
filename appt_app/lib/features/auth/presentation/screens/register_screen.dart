@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_text_field.dart';
+import '../widgets/google_sign_in_button.dart';
 import '../widgets/primary_button.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -26,6 +27,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _passwordCtrl.dispose();
     _confirmCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    await ref.read(authProvider.notifier).signInWithGoogle();
+
+    if (!mounted) return;
+    final state = ref.read(authProvider);
+    if (state is AuthAuthenticated) {
+      context.go('/home');
+    }
   }
 
   Future<void> _handleRegister() async {
@@ -110,6 +121,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 label: 'Create Account',
                 isLoading: isLoading,
                 onPressed: _handleRegister,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      'or',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 16),
+              GoogleSignInButton(
+                isLoading: isLoading,
+                onPressed: _handleGoogleSignIn,
               ),
             ],
           ),
