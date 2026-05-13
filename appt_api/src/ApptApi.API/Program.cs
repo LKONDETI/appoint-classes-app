@@ -48,12 +48,16 @@ builder.Services.AddAuthorization();
 // ── Repositories ─────────────────────────────────────────────────────────────
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // ── Services ─────────────────────────────────────────────────────────────────
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IGoogleTokenVerifier, GoogleTokenVerifier>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 // ── Validation ───────────────────────────────────────────────────────────────
 builder.Services.AddFluentValidationAutoValidation();
