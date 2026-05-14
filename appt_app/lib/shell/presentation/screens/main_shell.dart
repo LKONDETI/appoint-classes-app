@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../features/home/presentation/screens/home_screen.dart';
+import '../../../features/bookings/presentation/screens/my_bookings_screen.dart';
 import '../../../features/profile/presentation/screens/profile_screen.dart';
 
 /// The main shell displayed after the user logs in.
-/// Hosts a bottom [NavigationBar] with two tabs:
-///   0 — Home  (placeholder, to be built out later)
-///   1 — Profile (view / edit profile + profile picture)
+/// Hosts a bottom [NavigationBar] with three tabs:
+///   0 — Home        (upcoming classes + booking)
+///   1 — My Bookings (list of the current user's bookings)
+///   2 — Profile     (view / edit profile + profile picture)
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -18,6 +20,7 @@ class _MainShellState extends State<MainShell> {
 
   static const _screens = <Widget>[
     HomeScreen(),
+    MyBookingsScreen(),
     ProfileScreen(),
   ];
 
@@ -40,6 +43,11 @@ class _MainShellState extends State<MainShell> {
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home_rounded),
             label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_today_outlined),
+            selectedIcon: Icon(Icons.calendar_today_rounded),
+            label: 'My Bookings',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline_rounded),

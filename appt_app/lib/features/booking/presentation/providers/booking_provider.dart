@@ -13,6 +13,8 @@ final bookingRepositoryProvider = Provider<IBookingRepository>((ref) {
   );
 });
 
+// ── Action state (result of a single booking attempt) ─────────────────────────
+
 sealed class BookingActionState {
   const BookingActionState();
 }
@@ -35,16 +37,42 @@ class BookingActionError extends BookingActionState {
   const BookingActionError(this.message);
 }
 
+// ── Per-card loading state (tracks which class IDs are in flight) ─────────────
+
+/// Holds the set of class IDs whose booking request is currently in flight.
+/// UI layers use this to disable individual Book buttons while the request runs.
+class BookingInFlightNotifier extends StateNotifier<Set<String>> {
+  BookingInFlightNotifier() : super(const <String>{});
+
+  void markInFlight(String classId) {
+    state = {...state, classId};
+  }
+
+  void markCompleted(String classId) {
+    state = {...state}..remove(classId);
+  }
+
+  bool isInFlight(String classId) => state.contains(classId);
+}
+
+final bookingInFlightProvider =
+    StateNotifierProvider<BookingInFlightNotifier, Set<String>>((ref) {
+  return BookingInFlightNotifier();
+});
+
+// ── Booking notifier ──────────────────────────────────────────────────────────
+
 class BookingNotifier extends StateNotifier<BookingActionState> {
-  final IBookingRepository _repo;
+  final IBookingRepository _repository;
   final Ref _ref;
 
-  BookingNotifier(this._repo, this._ref) : super(const BookingActionIdle());
+  BookingNotifier(this._repository, this._ref) : super(const BookingActionIdle());
 
   Future<void> bookClass(String classId) async {
+    _ref.read(bookingInFlightProvider.notifier).markInFlight(classId);
     state = const BookingActionLoading();
     try {
-      final booking = await _repo.createBooking(classId);
+      final booking = await _repository.createBooking(classId);
       state = BookingActionSuccess(booking);
       _ref.read(classProvider.notifier).loadClasses();
     } on DioException catch (e) {
@@ -57,6 +85,8 @@ class BookingNotifier extends StateNotifier<BookingActionState> {
       state = BookingActionError(message);
     } on Exception {
       state = const BookingActionError('Booking failed. Please try again.');
+    } finally {
+      _ref.read(bookingInFlightProvider.notifier).markCompleted(classId);
     }
   }
 }

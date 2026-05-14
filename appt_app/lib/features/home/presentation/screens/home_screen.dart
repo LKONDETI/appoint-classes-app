@@ -23,6 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final classState = ref.watch(classProvider);
+    final inFlightClassIds = ref.watch(bookingInFlightProvider);
 
     ref.listen<BookingActionState>(bookingProvider, (_, next) {
       switch (next) {
@@ -84,10 +85,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 itemCount: classes.length,
                 itemBuilder: (context, index) {
                   final entity = classes[index];
+                  final isCardLoading = inFlightClassIds.contains(entity.id);
                   return ClassCard(
                     entity: entity,
-                    onBook: () =>
-                        ref.read(bookingProvider.notifier).bookClass(entity.id),
+                    isLoading: isCardLoading,
+                    onBook: isCardLoading
+                        ? null
+                        : () => ref
+                            .read(bookingProvider.notifier)
+                            .bookClass(entity.id),
                   );
                 },
               ),
