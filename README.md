@@ -26,13 +26,16 @@ appt_class/
 │       └── features/
 │           ├── auth/       # Login · Register · Splash
 │           ├── home/       # Home dashboard
-│           └── profile/    # View & edit user profile
+│           ├── profile/    # View & edit user profile
+│           ├── classes/    # Browse upcoming classes
+│           ├── booking/    # Book a class
+│           └── bookings/   # My Bookings list
 │
 ├── appt_api/               # .NET 9 REST API
 │   └── src/
 │       ├── ApptApi.API/            # Controllers · Middleware · Validators · Program.cs
-│       ├── ApptApi.Application/    # Services · DTOs · Interfaces
-│       ├── ApptApi.Domain/         # Entities · Domain interfaces
+│       ├── ApptApi.Application/    # Services · DTOs · Interfaces (Auth, Profile, Classes, Bookings)
+│       ├── ApptApi.Domain/         # Entities (User, UserProfile, Class, Provider, Booking) · Interfaces
 │       └── ApptApi.Infrastructure/ # EF Core DbContext · Repositories · JWT service
 │
 └── docker-compose.yml      # Runs the API on port 5276
@@ -102,6 +105,9 @@ When running on a **physical Android device**, change `baseUrl` to your machine'
 | `POST` | `/api/auth/login` | ❌ | Obtain a JWT token |
 | `GET` | `/api/profile` | ✅ Bearer | Get the authenticated user's profile |
 | `PUT` | `/api/profile` | ✅ Bearer | Update display name, bio, phone, avatar |
+| `GET` | `/api/classes` | ✅ Bearer | List upcoming classes (optional `?limit=N`) |
+| `POST` | `/api/bookings` | ✅ Bearer | Book a class |
+| `GET` | `/api/bookings/my` | ✅ Bearer | List the authenticated user's bookings |
 
 ### Example – Register
 
@@ -178,5 +184,6 @@ flutter test
 ## Known Limitations / Future Work
 
 - Session restore after app restart currently requires re-login (the token is preserved in secure storage but the user object is not yet persisted; a full restore would decode the JWT and populate the auth state).
-- No appointment / class booking feature yet — auth and profile are the foundation.
+- Google Sign-In requires additional platform configuration — see `GOOGLE_SIGNIN_SETUP.md`.
+- Booking cancellation is not yet implemented.
 - Push notifications and calendar sync are planned.
